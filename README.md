@@ -40,6 +40,29 @@ Example (yaml):
 mkdir -p <project_root>/config/doctrine/entities
 ```
 
+### Database Connection
+
+The database connection can be configured in
+`config/default/doctrine/connetion.php`.  Note that some of the configuration
+settings will allow you to pull from the environment.  You can replace these
+directly or opt to provide them in your environment.  Minimally, you will
+need to change the driver to a non-NULL value to enable doctrine:
+
+```php
+'driver' => 'pdo_pgsql',
+```
+
+In apache, you can set environment variables in your virtual host config
+using the SetEnv directive:
+
+```apache
+SetEnv DB_NAME production_my_app
+SetEnv DB_USER web
+```
+
+For other environments, please eference your server or shell documentation
+for how to setup environment variables.
+
 ## Usage
 
 The entity manager can be auto injected into controllers which use
