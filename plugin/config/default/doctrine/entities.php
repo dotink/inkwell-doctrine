@@ -15,6 +15,6 @@
 
 		'entity_root' => 'user/entities',
 
-		'config_root' => 'config/doctrine/entities'
+		'config_root' => 'config/default/doctrine/entities'
 
 	]);
