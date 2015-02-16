@@ -13,6 +13,11 @@
 
 		'config_type' => 'annotations',
 
+		//
+		// The `entity_root` and `config_root` will be relative to your inKWell application
+		// root unless you specify an absolute path (preceded with '/').
+		//
+
 		'entity_root' => 'user/entities',
 
 		'config_root' => 'config/default/doctrine/entities'
