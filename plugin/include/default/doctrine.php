@@ -2,8 +2,16 @@
 
 	use Dotink\Flourish;
 	use Doctrine\ORM\Tools\Setup;
+	use Doctrine\ORM\EntityManager;
 
 	return Affinity\Action::create(['core'], function($app, $broker) {
+
+		$connection_settings = $app['engine']->fetch('doctrine/connection');
+
+		if (!isset($connection_settings['driver'])) {
+			return;
+		}
+
 		$dev_mode = $app->checkExecutionMode(IW\EXEC_MODE\DEVELOPMENT);
 
 		extract($app['engine']->fetch('doctrine/entities', [
@@ -35,5 +43,8 @@
 				);
 		}
 
-		$app['entity.config'] = $config;
+		$app['entity.config']  = $config;
+		$app['entity.manager'] = EntityManager::create($connection_settings, $config);
+
+		$broker->share($app['entity.manager']);
 	});
