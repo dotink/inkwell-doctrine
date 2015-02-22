@@ -3,11 +3,18 @@
 	"description": "Doctrine 2 Integration for inKWell",
 	"keywords": ["orm", "database", "doctrine"],
 	"license": "AGPL-3.0",
+	"type": "opus-package",
 	"authors": [
 		{
 			"name": "Matthew J. Sahagian",
-			"email": "matt@imarc.net",
-			"role": "Developer"
+			"email": "msahagian@dotink.org",
+			"role": "Lead Architect / Developer"
+		}
+	],
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "http://packages.dotink.org"
 		}
 	],
 	"require": {
@@ -15,7 +22,6 @@
 		"doctrine/orm": "2.4.*",
 		"symfony/yaml": "2.*"
 	},
-	"type": "opus-package",
 	"extra": {
 		"opus": {
 			"inkwell/framework": {
