@@ -19,12 +19,16 @@
 	],
 	"require": {
 		"php": ">=5.4.0",
-		"doctrine/orm": "2.4.*",
+		"doctrine/orm": "2.5.*",
 		"symfony/yaml": "2.*"
+	},
+	"autoload": {
+		"classmap": ["src/"]
 	},
 	"extra": {
 		"opus": {
 			"inkwell/framework": {
+				"plugin/bin" : "bin",
 				"plugin/config"  : "config",
 				"plugin/include" : "include"
 			}
