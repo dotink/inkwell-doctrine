@@ -85,8 +85,13 @@ HELP
 		protected function execute(InputInterface $input, OutputInterface $output)
 		{
 			$base_namespace = $this->app['engine']->fetch('doctrine/entities', 'base_namespace');
+
 			$entity_root    = $this->app['engine']->fetch('doctrine/entities', 'entity_root');
-			$target_path    = $this->app->getDirectory($entity_root);
+			$entity_root    = $this->app->getDirectory($entity_root);
+
+			$repo_root      = $this->app['engine']->fetch('doctrine/entities', 'repository_root');
+			$repo_root      = $this->app->getDirectory($repo_root);
+
 
 			foreach ($this->metaData as $meta_data) {
 				$class_name = $meta_data->getName();
@@ -166,7 +171,7 @@ HELP
 				}
 
 				$this->sortMethods($base_class);
-				$this->write($target_path, $base_space, $base_class);
+				$this->write($entity_root, $base_space, $base_class, TRUE);
 
 				$space = new PhpNamespace($space_name);
 				$class = $space->addClass($class_name)
@@ -181,7 +186,22 @@ HELP
 
 				$space->setBracketedSyntax(TRUE);
 
-				$this->write($target_path, $space, $class);
+				$this->write($entity_root, $space, $class);
+
+				if ($meta_data->customRepositoryClassName) {
+					$repo_class_name = $meta_data->customRepositoryClassName;
+					$repo_space_name = $this->parseNamespace($repo_class_name);
+
+					$repo_space      = new PhpNamespace($repo_space_name);
+					$repo_class      = $repo_space->addClass($repo_class_name);
+
+					$repo_space->setBracketedSyntax(TRUE);
+					$repo_space->addUse('Inkwell\Doctrine\Repository');
+					$repo_class->setExtends('Inkwell\Doctrine\Repository');
+					$repo_class->addConst('MODEL', $space_name . '\\' . $class_name);
+
+					$this->write($repo_root, $repo_space, $repo_class);
+				}
 
 				echo PHP_EOL;
 			}
@@ -229,11 +249,15 @@ HELP
 		/**
 		 *
 		 */
-		protected function write($target_path, $space, $class)
+		protected function write($target_path, $space, $class, $overwrite = FALSE)
 		{
 			$space_path = str_replace('\\', DIRECTORY_SEPARATOR, $space->getName());
 			$directory  = $target_path . DIRECTORY_SEPARATOR . $space_path;
 			$file_path  = $directory . DIRECTORY_SEPARATOR . $class->getName() . '.php';
+
+			if (file_exists($file_path) && !$overwrite) {
+				return FALSE;
+			}
 
 			if (!is_dir($directory)) {
 				if (!@mkdir($directory, 0755, TRUE)) {
