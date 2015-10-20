@@ -28,12 +28,12 @@
 
 			case 'yaml':
 				$root   = $app->getDirectory($config_root);
-				$config = Setup::createXMLMetadataConfiguration([$root], $dev_mode);
+				$config = Setup::createYAMLMetadataConfiguration([$root], $dev_mode);
 				break;
 
 			case 'xml':
 				$root   = $app->getDirectory($config_root);
-				$config = Setup::createYAMLMetadataConfiguration([$root], $dev_mode);
+				$config = Setup::createXMLMetadataConfiguration([$root], $dev_mode);
 				break;
 
 			default:
