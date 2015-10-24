@@ -3,18 +3,22 @@
 	use Dotink\Flourish;
 	use Doctrine\ORM\EntityManager;
 	use Doctrine\ORM\EntityRepository;
+	use Doctrine\ORM\UnitOfWork;
 
 	/**
-	 * Base Repository Class
+	 * A common repository on which to base others
 	 *
 	 */
-	class Repository extends EntityRepository
+	abstract class Repository extends EntityRepository
 	{
 		const MODEL = NULL;
 
-
 		/**
+		 * The default order for records when retrieved in bulk
 		 *
+		 * @static
+		 * @access public
+		 * @var array
 		 */
 		static public $defaultOrder = array();
 
@@ -46,7 +50,17 @@
 		/**
 		 *
 		 */
-		public function save($entity, $flush = TRUE)
+		public function isPersisted($entity)
+		{
+			$uow = $this->_em->getUnitOfWork();
+
+			return UnitOfWork::STATE_MANAGED == $uow->getEntityState($entity);
+		}
+
+		/**
+		 *
+		 */
+		public function save($entity, $flush = FALSE)
 		{
 			if (!($entity instanceof $this->model)) {
 				throw new Flourish\ProgrammerException();
