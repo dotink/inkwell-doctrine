@@ -11,8 +11,6 @@
 	 */
 	abstract class Repository extends EntityRepository
 	{
-		const MODEL = NULL;
-
 		/**
 		 * The default order for records when retrieved in bulk
 		 *
@@ -28,11 +26,13 @@
 		 */
 		public function __construct(EntityManager $entity_manager)
 		{
-			if (!static::MODEL) {
-				throw new Flourish\ProgrammerException('Must set model on repository class');
-			}
+			$mdf = $entity_manager->getMetaDataFactory();
 
-			$this->model = static::MODEL;
+			foreach ($mdf->getAllMetaData() as $class => $metadata) {
+				if ($metadata->customRepositoryClassName == get_class($this)) {
+					$this->model = $metadata->getName();
+				}
+			}
 
 			parent::__construct($entity_manager, $entity_manager->getclassMetaData($this->model));
 		}
