@@ -84,6 +84,7 @@ HELP
 		 */
 		protected function execute(InputInterface $input, OutputInterface $output)
 		{
+			$root_class     = $this->app['engine']->fetch('doctrine/entities', 'root_class');
 			$base_namespace = $this->app['engine']->fetch('doctrine/entities', 'base_namespace');
 
 			$entity_root    = $this->app['engine']->fetch('doctrine/entities', 'entity_root');
@@ -105,6 +106,11 @@ HELP
 					-> setVisibility("public")
 					-> addDocument("Instantiate a new " . $base_class->getName())
 				;
+
+				if($root_class) {
+					$base_space->addUse($root_class);
+					$base_class->setExtends($root_class);
+				}
 
 				$base_space->setBracketedSyntax(TRUE);
 				$base_space->addUse('Doctrine\Common\Collections\ArrayCollection');
@@ -171,6 +177,7 @@ HELP
 				}
 
 				$this->sortMethods($base_class);
+				$this->sortProperties($base_class);
 				$this->write($entity_root, $base_space, $base_class, TRUE);
 
 				$space = new PhpNamespace($space_name);
@@ -218,6 +225,7 @@ HELP
 			return implode('\\', $parts);
 		}
 
+
 		/**
 		 *
 		 */
@@ -233,6 +241,24 @@ HELP
 
 			$class->setMethods($methods);
 		}
+
+
+		/**
+		 *
+		 */
+		protected function sortProperties($class)
+		{
+			$properties = $class->getProperties();
+
+			usort($properties, function($a, $b) {
+				return $a->getName() < $b->getName()
+					? -1
+					: 1;
+			});
+
+			$class->setProperties($properties);
+		}
+
 
 		/**
 		 *

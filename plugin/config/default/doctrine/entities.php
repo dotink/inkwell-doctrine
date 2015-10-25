@@ -10,15 +10,22 @@
 		// - xml         (config will be read from XML files in your config_root)
 		// - yaml        (config will be read from YAML files in your config_root)
 		//
+		//
+		// The default is yaml, although both yaml and xml should work with entity generation
+		//
 
-		'config_type' => 'annotations',
+		'config_type' => 'yaml',
+
+		// For purposes of code generation, base classes are created and can extend an initial
+		// root class.
+
+		'root_class' => NULL,
 
 		// For purposes of code generation, base classes are created and then extended, this
-		// namespace will be spliced into the namespace such that Example\Model will become
-		// Example\Base\Model
+		// namespace will be spliced into the namespace such that Example\Whatever will become
+		// Example\Base\Whatever
 
 		'base_namespace' => 'Base',
-
 
 		//
 		// The `entity_root` and `config_root` will be relative to your inKWell application
