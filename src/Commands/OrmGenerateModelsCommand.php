@@ -198,7 +198,6 @@ HELP
 					$repo_space->setBracketedSyntax(TRUE);
 					$repo_space->addUse('Inkwell\Doctrine\Repository');
 					$repo_class->setExtends('Inkwell\Doctrine\Repository');
-					$repo_class->addConst('MODEL', $space_name . '\\' . $class_name);
 
 					$this->write($repo_root, $repo_space, $repo_class);
 				}
