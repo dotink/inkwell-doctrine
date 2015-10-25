@@ -17,7 +17,7 @@
 	use Nette\PhpGenerator\ClassType;
 	use Nette\PhpGenerator\PhpNamespace;
 
-	class OrmGenerateModelsCommand extends Command
+	class OrmGenerateClassesCommand extends Command
 	{
 		/**
 		 *
@@ -57,7 +57,7 @@
 			$this->metaData      = $cmf->getAllMetaData();
 			$this->entityManager = $em;
 
-			parent::__construct('orm:generate:models');
+			parent::__construct('orm:generate:classes');
 		}
 
 
@@ -68,12 +68,12 @@
 		{
 			$this
 				->setDefinition(array())
-				->setDescription('Generate base model and repository classes')
+				->setDescription('Generate base entity and repository classes')
 				->setHelp(
 <<<HELP
-Generate base model and repository classes
+Generate base entity and repository classes
 
-orm:generate:models
+orm:generate:classes
 HELP
 				);
 		}
