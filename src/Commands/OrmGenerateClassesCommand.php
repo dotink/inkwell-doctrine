@@ -134,7 +134,6 @@ HELP
 						-> addBody("return \$this->$field;")
 					;
 
-
 					$base_class->addMethod('set' . ucfirst($field))
 						-> setVisibility("public")
 						-> addDocument("Set the value of $field")
@@ -173,6 +172,20 @@ HELP
 
 					if ($type == 'ArrayCollection') {
 						$constructor->addBody("\$this->$field = new ArrayCollection();");
+
+					} else {
+						$base_class->addMethod('set' . ucfirst($field))
+							-> setVisibility("public")
+							-> addDocument("Set the value of $field")
+							-> addDocument("")
+							-> addDocument("@access public")
+							-> addDocument("@param $type \$value The value to set to $field")
+							-> addDocument("@return " . $base_class->getName() . " The object instance for method chaining")
+							-> addBody("\$this->$field = \$value;")
+							-> addBody("")
+							-> addBody("return \$this;")
+							-> addParameter("value")
+							-> setTypeHint($type);
 					}
 				}
 
