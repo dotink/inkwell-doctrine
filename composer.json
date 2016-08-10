@@ -30,8 +30,8 @@
 		"opus": {
 			"inkwell/framework": {
 				"plugin/bin" : "bin",
-				"plugin/config"  : "config",
-				"plugin/include" : "include"
+				"plugin/config" : "config",
+				"plugin/boot" : "boot"
 			}
 		}
 	}

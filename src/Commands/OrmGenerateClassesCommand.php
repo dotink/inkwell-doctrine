@@ -104,7 +104,7 @@ HELP
 				$base_class  = $base_space->addClass($class_name);
 				$constructor = $base_class->addMethod('__construct')
 					-> setVisibility("public")
-					-> addDocument("Instantiate a new " . $base_class->getName())
+					-> addComment("Instantiate a new " . $base_class->getName())
 				;
 
 				if($root_class) {
@@ -120,27 +120,27 @@ HELP
 
 					$base_class->addProperty($field)
 						-> setVisibility("protected")
-						-> addDocument("")
-						-> addDocument("@access protected")
-						-> addDocument("@var $type");
+						-> addComment("")
+						-> addComment("@access protected")
+						-> addComment("@var $type");
 					;
 
 					$base_class->addMethod('get' . ucfirst($field))
 						-> setVisibility("public")
-						-> addDocument("Get the value of $field")
-						-> addDocument("")
-						-> addDocument("@access public")
-						-> addDocument("@return $type The value of $field")
+						-> addComment("Get the value of $field")
+						-> addComment("")
+						-> addComment("@access public")
+						-> addComment("@return $type The value of $field")
 						-> addBody("return \$this->$field;")
 					;
 
 					$base_class->addMethod('set' . ucfirst($field))
 						-> setVisibility("public")
-						-> addDocument("Set the value of $field")
-						-> addDocument("")
-						-> addDocument("@access public")
-						-> addDocument("@param $type \$value The value to set to $field")
-						-> addDocument("@return " . $base_class->getName() . " The object instance for method chaining")
+						-> addComment("Set the value of $field")
+						-> addComment("")
+						-> addComment("@access public")
+						-> addComment("@param $type \$value The value to set to $field")
+						-> addComment("@return " . $base_class->getName() . " The object instance for method chaining")
 						-> addBody("\$this->$field = \$value;")
 						-> addBody("")
 						-> addBody("return \$this;")
@@ -156,31 +156,44 @@ HELP
 
 					$base_class->addProperty($field)
 						-> setVisibility("protected")
-						-> addDocument("")
-						-> addDocument("@access protected")
-						-> addDocument("@var $type");
+						-> addComment("")
+						-> addComment("@access protected")
+						-> addComment("@var $type");
 					;
 
 					$base_class->addMethod('get' . ucfirst($field))
 						-> setVisibility("public")
-						-> addDocument("Get the value of $field")
-						-> addDocument("")
-						-> addDocument("@access public")
-						-> addDocument("@return $type The value of $field")
+						-> addComment("Get the value of $field")
+						-> addComment("")
+						-> addComment("@access public")
+						-> addComment("@return $type The value of $field")
 						-> addBody("return \$this->$field;")
 					;
 
 					if ($type == 'ArrayCollection') {
 						$constructor->addBody("\$this->$field = new ArrayCollection();");
 
+						//
+						// hasRelatedEntities()
+						// addRelatedEntities()
+						// removeRelatedEntities()
+						//
+
 					} else {
+
+						//
+						// hasRelatedEntity()
+						//
+						// On set, if value is set to null, check if bi-directional and remove 
+						//
+
 						$base_class->addMethod('set' . ucfirst($field))
 							-> setVisibility("public")
-							-> addDocument("Set the value of $field")
-							-> addDocument("")
-							-> addDocument("@access public")
-							-> addDocument("@param $type \$value The value to set to $field")
-							-> addDocument("@return " . $base_class->getName() . " The object instance for method chaining")
+							-> addComment("Set the value of $field")
+							-> addComment("")
+							-> addComment("@access public")
+							-> addComment("@param $type \$value The value to set to $field")
+							-> addComment("@return " . $base_class->getName() . " The object instance for method chaining")
 							-> addBody("\$this->$field = \$value;")
 							-> addBody("")
 							-> addBody("return \$this;")
@@ -200,7 +213,7 @@ HELP
 
 				$class->addMethod('__construct')
 					-> setVisibility("public")
-					-> addDocument("Instantiate a new " . $class->getName())
+					-> addComment("Instantiate a new " . $class->getName())
 					-> addBody("return parent::__construct();");
 				;
 
