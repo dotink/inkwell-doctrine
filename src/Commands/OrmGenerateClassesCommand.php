@@ -100,7 +100,7 @@ HELP
 
 				printf('Generated classes related to %s\%s', $space_name, $class_name);
 
-				$base_space  = new PhpNamespace($space_name . '\\' . $base_namespace);
+				$base_space  = new PhpNamespace(ltrim($space_name . '\\' . $base_namespace, '\\'));
 				$base_class  = $base_space->addClass($class_name);
 				$constructor = $base_class->addMethod('__construct')
 					-> setVisibility("public")
@@ -184,7 +184,7 @@ HELP
 						//
 						// hasRelatedEntity()
 						//
-						// On set, if value is set to null, check if bi-directional and remove 
+						// On set, if value is set to null, check if bi-directional and remove
 						//
 
 						$base_class->addMethod('set' . ucfirst($field))
