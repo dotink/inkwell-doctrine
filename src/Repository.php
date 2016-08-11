@@ -1,8 +1,10 @@
 <?php namespace Inkwell\Doctrine
 {
 	use Dotink\Flourish;
+	use Tenet\Accessor;
 	use Doctrine\ORM\EntityManager;
 	use Doctrine\ORM\EntityRepository;
+	use Doctrine\ORM\Tools\Pagination\Paginator;
 	use Doctrine\ORM\UnitOfWork;
 
 	/**
@@ -26,9 +28,9 @@
 		 */
 		public function __construct(EntityManager $entity_manager)
 		{
-			$mdf = $entity_manager->getMetaDataFactory();
+			$metadata_factory = $entity_manager->getMetaDataFactory();
 
-			foreach ($mdf->getAllMetaData() as $class => $metadata) {
+			foreach ($metadata_factory->getAllMetaData() as $class => $metadata) {
 				if ($metadata->customRepositoryClassName == get_class($this)) {
 					$this->model = $metadata->getName();
 				}
@@ -50,12 +52,63 @@
 		/**
 		 *
 		 */
+		public function build($builder, $limit = NULL, $page = 1)
+		{
+			$query = $this->query($builder);
+
+			$query->setFirstResult(($page - 1) * $limit);
+
+			if ($limit) {
+				$query->setMaxResults($limit);
+			}
+
+			return new Paginator($query, $fetchJoinCollection = true);
+		}
+
+
+		/**
+		 *
+		 */
+		public function query($builder)
+		{
+			$query = $this->_em
+				-> createQueryBuilder()
+				-> select('data')
+				-> from($this->model, 'data')
+			;
+
+			if (is_callable($builder)) {
+				$builder($query);
+
+			} elseif (is_string($builder) || is_array($builder)) {
+				settype($builder, 'array');
+
+				foreach ($builder as $method) {
+					if (!is_callable($method)) {
+						$method = [$this, 'query' . ucfirst($method)];
+					}
+
+					$method($query);
+				}
+
+			} else {
+				throw new Flourish\ProgrammerException('Invalid builder type');
+			}
+
+			return $query->getQuery();
+		}
+
+
+		/**
+		 *
+		 */
 		public function isPersisted($entity)
 		{
 			$uow = $this->_em->getUnitOfWork();
 
 			return UnitOfWork::STATE_MANAGED == $uow->getEntityState($entity);
 		}
+
 
 		/**
 		 *
