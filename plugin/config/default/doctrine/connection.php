@@ -8,7 +8,7 @@
 		// http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#driver
 		//
 
-		'driver'   => NULL,
+		'driver' => $app->getEnvironment('DB_TYPE', NULL),
 
 		//
 		// You should set these in your environment so that they can change more easily if the app
