@@ -16,6 +16,7 @@
 		//
 
 		'host'     => $app->getEnvironment('DB_HOST', 'localhost'),
+		'path'     => $app->getEnvironment('DB_PATH', NULL),
 		'dbname'   => $app->getEnvironment('DB_NAME', NULL),
 		'user'     => $app->getEnvironment('DB_USER', NULL),
 		'password' => $app->getEnvironment('DB_PASS', NULL),
