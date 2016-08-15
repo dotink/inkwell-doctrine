@@ -5,6 +5,7 @@
 	use Doctrine\ORM\EntityManager;
 	use Doctrine\ORM\EntityRepository;
 	use Doctrine\ORM\Tools\Pagination\Paginator;
+	use Doctrine\Common\Collections\ArrayCollection;
 	use Doctrine\ORM\UnitOfWork;
 
 	/**
@@ -43,15 +44,6 @@
 		/**
 		 *
 		 */
-		public function create()
-		{
-			return new $this->model();
-		}
-
-
-		/**
-		 *
-		 */
 		public function build($builder, $limit = NULL, $page = 1)
 		{
 			$query = $this->query($builder);
@@ -63,6 +55,53 @@
 			}
 
 			return new Paginator($query, $fetchJoinCollection = true);
+		}
+
+
+		/**
+		 *
+		 */
+		public function create()
+		{
+			return new $this->model();
+		}
+
+
+		/**
+		 * Finds entities by a set of criteria.
+		 *
+		 * @param array      $criteria
+		 * @param array|null $orderBy
+		 * @param int|null   $limit
+		 * @param int|null   $offset
+		 *
+		 * @return array The objects.
+		 */
+		public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+		{
+			$persister = $this->_em->getUnitOfWork()->getEntityPersister($this->_entityName);
+
+			return new ArrayCollection($persister->loadAll($criteria, $orderBy, $limit, $offset));
+		}
+
+
+		/**
+		 *
+		 */
+		public function isInstance($entity)
+		{
+			return $entity instanceof $this->model;
+		}
+
+
+		/**
+		 *
+		 */
+		public function isPersisted($entity)
+		{
+			$uow = $this->_em->getUnitOfWork();
+
+			return UnitOfWork::STATE_MANAGED == $uow->getEntityState($entity);
 		}
 
 
@@ -102,11 +141,21 @@
 		/**
 		 *
 		 */
-		public function isPersisted($entity)
+		public function remove($entity, $flush = FALSE)
 		{
-			$uow = $this->_em->getUnitOfWork();
+			if (!$this->isInstance($entity)) {
+				throw new Flourish\ProgrammerException(
+					'Cannot remove entity of type "%s", must be a "%s"',
+					get_class($entity),
+					$this->model
+				);
+			}
 
-			return UnitOfWork::STATE_MANAGED == $uow->getEntityState($entity);
+			$this->_em->remove($entity);
+
+			if ($flush) {
+				$this->_em->flush();
+			}
 		}
 
 
@@ -115,8 +164,12 @@
 		 */
 		public function save($entity, $flush = FALSE)
 		{
-			if (!($entity instanceof $this->model)) {
-				throw new Flourish\ProgrammerException();
+			if (!$this->isInstance($entity)) {
+				throw new Flourish\ProgrammerException(
+					'Cannot save entity of type "%s", must be a "%s"',
+					get_class($entity),
+					$this->model
+				);
 			}
 
 			$this->_em->persist($entity);
